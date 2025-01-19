@@ -218,7 +218,7 @@ impl App {
             }
         }
 
-        // neded in case of default_window_close_behavior WindowsHides | LastWindowHides since they may not remove a window
+        // needed in case of `default_window_close_behavior WindowsHides | LastWindowHides` since they may not remove a window on `WindowCloses`
         if remove {
             #[cfg(debug_assertions)]
             self.persist_window_state();
