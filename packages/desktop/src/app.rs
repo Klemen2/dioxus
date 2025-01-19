@@ -256,14 +256,6 @@ impl App {
                 self.webviews.remove(&id);
             }
         }
-
-        if self.default_window_close_behavior == LastWindowHides {
-            if self.webviews.len() > 1 {
-                self.webviews.remove(&id);
-            } else if let Some(webview) = self.webviews.get(&id) {
-                hide_window(&webview.desktop_context.window);
-            }
-        }
     }
 
     pub fn window_destroyed(&mut self, id: WindowId) {
