@@ -218,15 +218,16 @@ impl App {
             }
         }
 
+        // neded in case of default_window_close_behavior WindowsHides | LastWindowHides since they may not remove a window
         if remove {
             #[cfg(debug_assertions)]
             self.persist_window_state();
 
             self.webviews.remove(&id);
-            if matches!(self.default_window_close_behavior, LastWindowExitsApp) {
-                if self.webviews.is_empty() {
-                    self.control_flow = ControlFlow::Exit
-                }
+            if matches!(self.default_window_close_behavior, LastWindowExitsApp)
+                && self.webviews.is_empty()
+            {
+                self.control_flow = ControlFlow::Exit
             }
             return;
         }
