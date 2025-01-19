@@ -58,7 +58,7 @@ pub struct DesktopService {
 
     /// The tao window itself
     pub window: Window,
-    /// Close behaviour of current window
+
     pub(crate) shared: Rc<SharedContext>,
 
     /// The receiver for queries about the current window
