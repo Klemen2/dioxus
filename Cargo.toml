@@ -248,7 +248,7 @@ itertools = "0.14.0"
 
 # desktop
 wry = { version = "0.48.1", default-features = false }
-winit = { version = "0.30.8", features = ["rwh_05"] }
+winit = { version = "0.30", features = ["rwh_05"] }
 webbrowser = "1.0.1"
 infer = "0.16.0"
 dunce = "1.0.5"
