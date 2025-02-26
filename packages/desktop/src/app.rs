@@ -133,23 +133,16 @@ impl App {
                 UserWindowEvent::NewWindow => self.handle_new_windows(event_loop),
                 UserWindowEvent::CloseWindow(id) => self.handle_close_msg(id),
                 UserWindowEvent::Shutdown => self.control_flow = AppControlFlow::Exit,
-
                 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
                 UserWindowEvent::GlobalHotKeyEvent(evnt) => self.handle_global_hotkey(evnt),
-
                 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
                 UserWindowEvent::MudaMenuEvent(evnt) => self.handle_menu_event(evnt),
-
                 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
                 UserWindowEvent::TrayMenuEvent(evnt) => self.handle_tray_menu_event(evnt),
-
                 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
                 UserWindowEvent::TrayIconEvent(evnt) => self.handle_tray_icon_event(evnt),
-
                 #[cfg(all(feature = "devtools", debug_assertions))]
                 UserWindowEvent::HotReloadEvent(msg) => self.handle_hot_reload_msg(msg),
-
-                // Windows-only drag-n-drop fix events. We need to call the interpreter drag-n-drop code.
                 UserWindowEvent::WindowsDragDrop(id) => {
                     if let Some(webview) = self.webviews.get(&id) {
                         webview.dom.in_runtime(|| {
@@ -186,7 +179,6 @@ impl App {
                         });
                     }
                 }
-
                 UserWindowEvent::Ipc { id, msg } => match msg.method() {
                     IpcMethod::Initialize => self.handle_initialize_msg(id),
                     IpcMethod::FileDialog => self.handle_file_dialog_msg(msg, id),
@@ -195,6 +187,9 @@ impl App {
                     IpcMethod::BrowserOpen => self.handle_browser_open(msg),
                     IpcMethod::Other(_) => {}
                 },
+                UserWindowEvent::CloseBehaviour(id, behaviour) => {
+                    self.change_window_close_behaviour(id, behaviour)
+                }
             },
             _ => {}
         }
