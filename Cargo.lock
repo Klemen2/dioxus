@@ -15998,3 +15998,8 @@ dependencies = [
  "quote",
  "syn 2.0.90",
 ]
+
+[[patch.unused]]
+name = "winit"
+version = "0.30.9"
+source = "git+https://github.com/rust-windowing/winit/?rev=51ab7c646a319b31973ff32b13e480a0f3dace3e#51ab7c646a319b31973ff32b13e480a0f3dace3e"
