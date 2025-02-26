@@ -366,7 +366,7 @@ impl App {
             if let Some(close_behaviour) = &webview.close_behaviour {
                 match close_behaviour {
                     WindowExitsApp => {
-                        self.control_flow = ControlFlow::Exit;
+                        self.control_flow = AppControlFlow::Exit;
                         return;
                     }
                     WindowHides => {
@@ -389,7 +389,7 @@ impl App {
             if matches!(self.default_window_close_behavior, LastWindowExitsApp)
                 && self.webviews.is_empty()
             {
-                self.control_flow = ControlFlow::Exit
+                self.control_flow = AppControlFlow::Exit
             }
             return;
         }
@@ -787,7 +787,7 @@ struct PreservedWindowState {
 /// it again when the user switches back to the app. `NSApplication::hide:` has the correct behaviour,
 /// so we need to special case it.
 #[allow(unused)]
-fn hide_last_window(window: &Window) {
+fn hide_window(window: &Window) {
     #[cfg(any(target_os = "windows", target_os = "linux"))]
     {
         window.set_visible(false);
