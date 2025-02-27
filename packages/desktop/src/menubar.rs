@@ -5,6 +5,12 @@ pub type DioxusMenu = muda::Menu;
 #[cfg(any(target_os = "ios", target_os = "android"))]
 pub type DioxusMenu = ();
 
+#[cfg(not(any(target_os = "ios", target_os = "android")))]
+pub type DioxusMenuIcon = muda::Icon;
+
+#[cfg(any(target_os = "ios", target_os = "android"))]
+pub type DioxusMenuIcon = ();
+
 /// Initializes the menu bar for the window.
 #[allow(unused)]
 pub fn init_menu_bar(menu: &DioxusMenu, window: &Window) {
@@ -31,16 +37,19 @@ pub fn default_menu_bar() -> DioxusMenu {
 mod desktop_platforms {
     use super::*;
     use muda::{Menu, MenuItem, PredefinedMenuItem, Submenu};
-    use winit::raw_window_handle_05::{HasRawWindowHandle, RawWindowHandle};
+    use winit::raw_window_handle::{HasWindowHandle, RawWindowHandle};
 
     #[allow(unused)]
     pub fn init_menu_bar(menu: &Menu, window: &Window) {
         #[cfg(target_os = "windows")]
         {
-            let RawWindowHandle::Win32(handle) = window.raw_window_handle() else {
-                return;
-            };
-            menu.init_for_hwnd(handle.hwnd as isize);
+            if let Ok(handle) = window.window_handle() {
+                if let RawWindowHandle::Win32(handle) = handle.as_raw() {
+                    unsafe {
+                        menu.init_for_hwnd(handle.hwnd.into());
+                    }
+                }
+            }
         }
 
         #[cfg(target_os = "linux")]

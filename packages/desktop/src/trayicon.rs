@@ -5,14 +5,7 @@ use dioxus_core::{
     use_hook,
 };
 
-#[cfg(not(any(target_os = "ios", target_os = "android")))]
-pub use tray_icon::*;
-
-/// tray icon menu type trait
-#[cfg(not(any(target_os = "ios", target_os = "android")))]
-pub type DioxusTrayMenu = tray_icon::menu::Menu;
-#[cfg(any(target_os = "ios", target_os = "android"))]
-pub type DioxusTrayMenu = ();
+use crate::menubar::DioxusMenu;
 
 /// tray icon icon type trait
 #[cfg(not(any(target_os = "ios", target_os = "android")))]
@@ -28,24 +21,15 @@ pub type DioxusTray = ();
 
 /// initializes a tray icon
 #[allow(unused)]
-pub fn init_tray_icon(menu: DioxusTrayMenu, icon: Option<DioxusTrayIcon>) -> DioxusTray {
+pub fn init_tray_icon(menu: DioxusMenu, icon: Option<DioxusTrayIcon>) -> DioxusTray {
     #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
     {
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        let default = tray_icon::Icon::from_rgba(
-            include_bytes!("./assets/default_icon.bin").to_vec(),
-            460,
-            460,
-        );
-        #[cfg(target_os = "windows")]
-        let default = tray_icon::Icon::from_resource(32512, None);
-
         let builder = tray_icon::TrayIconBuilder::new()
             .with_menu(Box::new(menu))
             .with_menu_on_left_click(false)
             .with_icon(match icon {
                 Some(value) => value,
-                None => default.expect("image parse failed"),
+                None => crate::default_icon(),
             });
 
         provide_context(builder.build().expect("tray icon builder failed"))
@@ -53,11 +37,11 @@ pub fn init_tray_icon(menu: DioxusTrayMenu, icon: Option<DioxusTrayIcon>) -> Dio
 }
 
 /// Returns a default tray icon menu
-pub fn default_tray_icon() -> DioxusTrayMenu {
+pub fn default_tray_icon() -> DioxusMenu {
     #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
     {
-        use tray_icon::menu::{Menu, PredefinedMenuItem};
-        let tray_menu = Menu::new();
+        use muda::PredefinedMenuItem;
+        let tray_menu = DioxusMenu::new();
         tray_menu
             .append_items(&[&PredefinedMenuItem::quit(None)])
             .unwrap();

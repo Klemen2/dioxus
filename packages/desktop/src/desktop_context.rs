@@ -13,7 +13,8 @@ use tokio::sync::oneshot::{self, Receiver};
 use winit::{
     event::Event,
     event_loop::ActiveEventLoop,
-    window::{Fullscreen as WryFullscreen, Window, WindowId},
+    platform::windows::IconExtWindows,
+    window::{Fullscreen as WryFullscreen, Icon, Window, WindowId},
 };
 use wry::{RequestAsyncResponder, WebView};
 

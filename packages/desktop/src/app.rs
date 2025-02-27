@@ -138,8 +138,6 @@ impl App {
                 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
                 UserWindowEvent::MudaMenuEvent(evnt) => self.handle_menu_event(evnt),
                 #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
-                UserWindowEvent::TrayMenuEvent(evnt) => self.handle_tray_menu_event(evnt),
-                #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
                 UserWindowEvent::TrayIconEvent(evnt) => self.handle_tray_icon_event(evnt),
                 #[cfg(all(feature = "devtools", debug_assertions))]
                 UserWindowEvent::HotReloadEvent(msg) => self.handle_hot_reload_msg(msg),
@@ -213,7 +211,7 @@ impl App {
     pub fn handle_menu_event(&mut self, event: muda::MenuEvent) {
         use winit::window::WindowLevel;
 
-        match event.id().0.as_str() {
+        match dbg!(event.id().0.as_str()) {
             "dioxus-float-top" => {
                 for webview in self.webviews.values() {
                     let window_level = match self.float_all {
@@ -316,14 +314,7 @@ impl App {
 
         // We assume that if the icon is None in cfg, then the user just didnt set it
         if attributes.window_icon.is_none() {
-            attributes = attributes.with_window_icon(Some(
-                winit::window::Icon::from_rgba(
-                    include_bytes!("./assets/default_icon.bin").to_vec(),
-                    460,
-                    460,
-                )
-                .expect("image parse failed"),
-            ));
+            attributes = attributes.with_window_icon(Some(crate::default_icon()));
         }
 
         let window = event_loop.create_window(attributes).unwrap();
@@ -646,7 +637,7 @@ impl App {
         let receiver = self.shared.proxy.clone();
         tray_icon::menu::MenuEvent::set_event_handler(Some(move |t| {
             // todo: should we unset the event handler when the app shuts down?
-            _ = receiver.send_event(UserWindowEvent::TrayMenuEvent(t));
+            _ = receiver.send_event(UserWindowEvent::MudaMenuEvent(t));
         }));
     }
 

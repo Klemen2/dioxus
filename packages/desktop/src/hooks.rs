@@ -64,7 +64,7 @@ pub fn use_tray_menu_event_handler(
     mut handler: impl FnMut(&tray_icon::menu::MenuEvent) + 'static,
 ) -> WryEventHandler {
     use_wry_event_handler(move |event, _| {
-        if let Event::UserEvent(UserWindowEvent::TrayMenuEvent(event)) = event {
+        if let Event::UserEvent(UserWindowEvent::MudaMenuEvent(event)) = event {
             handler(event);
         }
     })

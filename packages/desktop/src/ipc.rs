@@ -16,9 +16,6 @@ pub enum UserWindowEvent {
     #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
     TrayIconEvent(tray_icon::TrayIconEvent),
 
-    #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
-    TrayMenuEvent(tray_icon::menu::MenuEvent),
-
     CloseBehaviour(WindowId, Option<WindowCloseBehaviour>),
 
     /// Poll the virtualdom
