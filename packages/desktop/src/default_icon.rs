@@ -1,5 +1,3 @@
-use crate::{menubar::DioxusMenuIcon, DioxusTrayIcon};
-
 // TODO only implemented for windows, needs implementation for other platforms
 
 pub trait DefaultIcon {
@@ -9,7 +7,10 @@ pub trait DefaultIcon {
 }
 
 #[cfg(not(target_os = "windows"))]
-static ICON: &'static [u8; N] = include_bytes!("./assets/default_icon.bin");
+static ICON: &'static [u8] = include_bytes!("./assets/default_icon.bin");
+
+#[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+use crate::DioxusTrayIcon;
 
 #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
 impl DefaultIcon for DioxusTrayIcon {
@@ -25,6 +26,9 @@ impl DefaultIcon for DioxusTrayIcon {
         default.expect("image parse failed")
     }
 }
+
+#[cfg(not(any(target_os = "ios", target_os = "android")))]
+use crate::menubar::DioxusMenuIcon;
 
 #[cfg(not(any(target_os = "ios", target_os = "android")))]
 impl DefaultIcon for DioxusMenuIcon {
