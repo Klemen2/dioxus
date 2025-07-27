@@ -365,7 +365,9 @@ impl WindowsResource {
             None => bundle.long_description.as_ref().unwrap_or(&binding),
         };
 
-        let output_dir = build.bundle_dir(build.platform).join("winres");
+
+
+        let output_dir = build.bundle_dir(crate::BundleFormat::Windows).join("winres");
         fs::create_dir_all(&output_dir)?;
 
         let mut winres = Self::new();
